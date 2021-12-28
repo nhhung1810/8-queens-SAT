@@ -7,11 +7,18 @@ from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPDF, renderPM
 import tempfile
 from PIL import ImageTk, Image
+from solver import AStarSolver, heuristic, action
+import os
 
 def solve(input):
     # solve here
-
-    return ["7 6 5 4 3 2 1 0"]
+    intiState = [6, -1, -1, -1, -1, -1, -1, -1]
+    return AStarSolver(
+        state=intiState, 
+        heuristic=heuristic, 
+        action=action
+    ).solve().getResult(isPrint=False)
+    # return ["7 6 5 4 3 2 1 0"]
 
 def encode(pos):
     board = [[0,0,0,0,0,0,0,0] for i in range(0, 8)]
@@ -62,7 +69,7 @@ class App:
         quit()
     
     def onLoad(self):
-        filename = filedialog.askopenfilename()
+        filename = filedialog.askopenfilename(initialdir=os.getcwd())
         f = open(filename, "r")
         line = f.readline()
 
@@ -70,7 +77,7 @@ class App:
 
         res = solve(line)
         for x in res:
-            self.display(encode(x.split(" ")))
+            self.display(encode(x))
 
     def display(self, board_encoded):
         board = chess.Board(board_encoded)
