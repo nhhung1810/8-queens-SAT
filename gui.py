@@ -62,7 +62,7 @@ class App:
 
         menubar.add_cascade(label="File", menu=fileMenu)
 
-        self.speed_slider = Scale(self.frame, from_=0, to=1000, orient=HORIZONTAL, showvalue=False)
+        self.speed_slider = Scale(self.frame, from_=1, to=1000, orient=HORIZONTAL, showvalue=False)
         self.speed_slider.set(1000)
         self.speed_slider.pack(anchor=CENTER, side=BOTTOM)
 
