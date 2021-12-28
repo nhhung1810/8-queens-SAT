@@ -93,8 +93,9 @@ class App:
         board = chess.Board(board_encoded)
         svg = chess.svg.board(board=board, size=500)
 
-        svg_tempfile = tempfile.NamedTemporaryFile(delete=False)
-        svg_tempfile.write(svg.encode('utf-8'))
+        # svg_tempfile = tempfile.NamedTemporaryFile(delete=False)
+        svg_tempfile = open('temp', 'w')
+        svg_tempfile.write(svg)
         svg_tempfile.close()
         
         drawing = svg2rlg(svg_tempfile.name)
