@@ -7,6 +7,7 @@ from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPDF, renderPM
 import tempfile
 from PIL import ImageTk, Image
+import time
 
 def solve(input):
     # solve here
@@ -54,9 +55,9 @@ class App:
 
         menubar.add_cascade(label="File", menu=fileMenu)
 
-        speed_slider = Scale(self.frame, from_=0, to=1000, orient=HORIZONTAL, showvalue=False)
-        speed_slider.set(1000)
-        speed_slider.pack(anchor=CENTER, side=BOTTOM)
+        self.speed_slider = Scale(self.frame, from_=0, to=1000, orient=HORIZONTAL, showvalue=False)
+        self.speed_slider.set(1000)
+        self.speed_slider.pack(anchor=CENTER, side=BOTTOM)
 
     def onExit(self):
         quit()
@@ -69,8 +70,17 @@ class App:
         self.display(encode(line.split(" ")))   
 
         res = solve(line)
-        for x in res:
-            self.display(encode(x.split(" ")))
+        self.show_result(res)
+        # for x in res:
+        #     time.sleep(self.speed_slider.get()/1000)
+        #     # self.display(encode(x.split(" ")))
+
+    def show_result(self, res):
+        if len(res) == 0:
+            return
+        print(res[0])
+        self.window.after(self.speed_slider.get(), self.display,encode(res[0].split(" ")))
+        window.after(self.speed_slider.get(), self.show_result, res[1:])
 
     def display(self, board_encoded):
         board = chess.Board(board_encoded)
