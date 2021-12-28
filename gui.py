@@ -8,11 +8,18 @@ from reportlab.graphics import renderPDF, renderPM
 import tempfile
 from PIL import ImageTk, Image
 import time
+from solver import AStarSolver, heuristic, action
+import os
 
 def solve(input):
     # solve here
-
-    return ["7 6 5 4 3 2 1 0"]
+    intiState = [6, -1, -1, -1, -1, -1, -1, -1]
+    return AStarSolver(
+        state=intiState, 
+        heuristic=heuristic, 
+        action=action
+    ).solve().getResult(isPrint=False)
+    # return ["7 6 5 4 3 2 1 0"]
 
 def encode(pos):
     board = [[0,0,0,0,0,0,0,0] for i in range(0, 8)]
@@ -63,7 +70,7 @@ class App:
         quit()
     
     def onLoad(self):
-        filename = filedialog.askopenfilename()
+        filename = filedialog.askopenfilename(initialdir=os.getcwd())
         f = open(filename, "r")
         line = f.readline()
 
@@ -78,9 +85,9 @@ class App:
     def show_result(self, res):
         if len(res) == 0:
             return
-        print(res[0])
-        self.window.after(self.speed_slider.get(), self.display,encode(res[0].split(" ")))
-        window.after(self.speed_slider.get(), self.show_result, res[1:])
+        # print(res[0])
+        self.window.after(self.speed_slider.get(), self.display,encode(res[0]))
+        self.window.after(self.speed_slider.get(), self.show_result, res[1:])
 
     def display(self, board_encoded):
         board = chess.Board(board_encoded)
