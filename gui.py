@@ -66,6 +66,9 @@ class App:
         self.speed_slider.set(1000)
         self.speed_slider.pack(anchor=CENTER, side=BOTTOM)
 
+        self.label = Label(self.frame, text="0/0")
+        self.label.pack(side=BOTTOM, anchor=CENTER)
+
     def onExit(self):
         quit()
     
@@ -77,6 +80,8 @@ class App:
         self.display(encode(line.split(" ")))   
 
         res = solve(line)
+        self.total = len(res)
+        self.current = 0
         self.show_result(res)
         # for x in res:
         #     time.sleep(self.speed_slider.get()/1000)
@@ -85,6 +90,9 @@ class App:
     def show_result(self, res):
         if len(res) == 0:
             return
+        
+        self.current = self.current + 1
+        self.label["text"] = str(self.current) + "/" +str(self.total)
         # print(res[0])
         self.window.after(self.speed_slider.get(), self.display,encode(res[0]))
         self.window.after(self.speed_slider.get(), self.show_result, res[1:])
@@ -99,7 +107,7 @@ class App:
         svg_tempfile.close()
         
         drawing = svg2rlg(svg_tempfile.name)
-        print(svg_tempfile.name)
+        # print(svg_tempfile.name)
         svg_buffer = BytesIO()
         renderPM.drawToFile(drawing, svg_buffer, fmt='PNG')
         img = Image.open(svg_buffer)
