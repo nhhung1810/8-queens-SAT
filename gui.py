@@ -68,7 +68,8 @@ class App:
 
         self.label = Label(self.frame, text="0/0")
         self.label.pack(side=BOTTOM, anchor=CENTER)
-
+        self.button = Button(self.frame, text="Start Sove", command=self.startSolve)
+        # self.button.pack()
     def onExit(self):
         quit()
     
@@ -78,14 +79,22 @@ class App:
         line = f.readline()
 
         self.display(encode(line.split(" ")))   
-
-        res = solve(line)
-        self.total = len(res)
-        self.current = 0
-        self.show_result(res)
+        self.button.pack()
+        self.input = line
+        # res = solve(line)
+        # self.total = len(res)
+        # self.current = 0
+        # self.show_result(res)
         # for x in res:
         #     time.sleep(self.speed_slider.get()/1000)
         #     # self.display(encode(x.split(" ")))
+
+    def startSolve(self):
+        self.button.pack_forget()
+        res = solve(self.input)
+        self.total = len(res)
+        self.current = 0
+        self.show_result(res)
 
     def show_result(self, res):
         if len(res) == 0:
