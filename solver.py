@@ -40,6 +40,7 @@ class Node():
         self.isInFrontier = False
         self.bestCost = 10**8
         self.isExpanded = False
+        self.previousNode = None
         
     def __lt__(self, other):
         # lexicographical order
@@ -64,10 +65,11 @@ class AStarSolver():
         self.frontier = Heap()
         self.heuristic : Callable = heuristic
         self.stateDict = {}
-        self.path = []
+        self.expanded = []
+        self.finalNode = None
       
     def solve(self):
-        self.path = []
+        self.expanded = []
         self.init.bestCost = 0
         self.frontier.push(0, self.init)
         # this 
@@ -77,11 +79,12 @@ class AStarSolver():
         while not self.frontier.isEmpty():
             node : Node = self.frontier.pop()
             node.isInFrontier = True
-            self.path.append(node.getState())
+            self.expanded.append(node.getState())
             
             # Test if popped node is goal
             if self.goalTest(node):
                 print("Final result: ", node.getState())
+                self.finalNode = node
                 return self
             
             # Add node to expanded
@@ -97,6 +100,7 @@ class AStarSolver():
                     # Calculate new cost
                     newCost = self.calculateCost(node, adjNode)
                     adjNode.bestCost = newCost
+                    adjNode.previousNode = node
                     # New node to the frontier
                     self.frontier.push(newCost, adjNode)
                     
@@ -129,13 +133,27 @@ class AStarSolver():
         return result
     
     def getResult(self, isPrint : bool):
-        if(len(self.path) == 0):
+        if(len(self.expanded) == 0):
             print("Run the solve() function first!!")
             return []
+
+        if self.finalNode != None:
+            path = [self.finalNode]
+            pathState = [self.finalNode.getState()]
+            while path[-1].previousNode != None:
+                path.append(path[-1].previousNode)
+                pathState.append(path[-1].getState())
+        else:
+            pathState = [self.init.getState()]
+
+        pathState = pathState[::-1]
+
         if isPrint:
-            print("This is the path:")
-            print(self.path)
-        return self.path
+            print("Count:", len(self.expanded))
+            print("List of expanded states:")
+            print(self.expanded)
+            print("Path:", ' -> '.join([str(state) for state in pathState]))
+        return pathState
 
 def action(state : list) -> list:
     if(len(state) != 8):
@@ -152,23 +170,21 @@ def action(state : list) -> list:
     return []
 
 def num_attacking_pairs (status: List[int]) -> int:
-  res = 0
-  for i in range(8):
-    if status[i] == -1:
-      continue
-    for j in range(i + 1, 8):
-      if status[j] == -1:
-        continue
-      if status[i] == status[j] or i + status[i] == j + status[j] or i - status[i] == j - status[j]:
-        res += 1
-
-  return res
+    res = 0
+    for i in range(8):
+        if status[i] == -1:
+            continue
+        for j in range(i + 1, 8):
+            if status[j] == -1:
+                continue
+            if status[i] == status[j] or i + status[i] == j + status[j] or i - status[i] == j - status[j]:
+                res += 1
+    return res
 
 def heuristic(state) -> int:
     return num_attacking_pairs(state)
             
-intiState = [6, -1, -1, -1, -1, -1, -1, -1]
-solver  = AStarSolver(intiState, action, heuristic)
-solver.solve()
-res = solver.getResult(isPrint=True)
-print("Count:", len(res))
+# intiState = [6, -1, -1, -1, -1, -1, -1, -1]
+# solver  = AStarSolver(intiState, action, heuristic)
+# solver.solve()
+# res = solver.getResult(isPrint=True)

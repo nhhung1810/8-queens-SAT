@@ -13,12 +13,12 @@ import os
 
 def solve(input):
     # solve here
-    intiState = [6, -1, -1, -1, -1, -1, -1, -1]
+    intiState = [int(c) for c in input.split(" ")]
     return AStarSolver(
         state=intiState, 
         heuristic=heuristic, 
         action=action
-    ).solve().getResult(isPrint=False)
+    ).solve().getResult(isPrint=True)
     # return ["7 6 5 4 3 2 1 0"]
 
 def encode(pos):
